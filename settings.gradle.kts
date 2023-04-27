@@ -3,7 +3,7 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.5.0"
 }
 
-rootProject.name = "alchemist-primer"
+rootProject.name = "acsos-2023-pulverization-simulation"
 
 gradleEnterprise {
     buildScan {
