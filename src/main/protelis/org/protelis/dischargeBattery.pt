@@ -21,6 +21,5 @@ rep(still <- [now, currentCharge]) {
     let stillNow = still.get(0)
     let stillCharge = still.get(1)
 
-    let charge = if (now - stillNow > frame) { discharge(stillCharge) } else { stillCharge }
-    [stillNow, charge]
+    if (now - stillNow > frame) { [now, discharge(stillCharge)] } else { [stillNow, stillCharge] }
 }

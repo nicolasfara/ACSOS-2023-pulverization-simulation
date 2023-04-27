@@ -51,7 +51,7 @@ _random-target: &random-target
   - program: send
 
 _discharge: &discharge
-  - time-distribution: 2.0
+  - time-distribution: 0.5
     program: org:protelis:dischargeBattery
 
 _move: &move
