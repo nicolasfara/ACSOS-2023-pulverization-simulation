@@ -1,0 +1,26 @@
+module org:protelis:dischargeBattery
+
+def discharge(currentCharge) {
+    let runningHost = env.get("runningHost")
+    let deviceDischargeRate = env.get("deviceDischargeRate")
+    let cloudDischargeRate = env.get("cloudDischargeRate")
+
+    env.put("DEBUG running host: ", runningHost)
+    env.put("DEBUG Charge: ", currentCharge)
+
+    let dischargeRate = if (runningHost == "cloud") { cloudDischargeRate } else { deviceDischargeRate }
+    let newCharge = currentCharge - dischargeRate;
+    if (newCharge < 0) { 0.0 } else { newCharge }
+}
+
+let now = self.getCurrentTime()
+let frame = 40;
+let currentCharge = 100.0;
+
+rep(still <- [now, currentCharge]) {
+    let stillNow = still.get(0)
+    let stillCharge = still.get(1)
+
+    let charge = if (now - stillNow > frame) { discharge(stillCharge) } else { stillCharge }
+    [stillNow, charge]
+}

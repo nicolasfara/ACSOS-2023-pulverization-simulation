@@ -50,6 +50,10 @@ _random-target: &random-target
     program: org:protelis:randomTarget
   - program: send
 
+_discharge: &discharge
+  - time-distribution: 2.0
+    program: org:protelis:dischargeBattery
+
 _move: &move
   - type: Event
     time-distribution: 1.0
@@ -68,7 +72,7 @@ _move: &move
 _device: &device
   type: Rectangle
   parameters: [*real_device_count, *min_lat, *min_lon, *latitude_space, *longitude_space]
-  programs: [*random-target, *move]
+  programs: [*random-target, *move, *discharge]
   contents:
     - molecule: minLon
       concentration: *min_lon
@@ -80,6 +84,12 @@ _device: &device
       concentration: *max_lat
     - molecule: initialTargets
       concentration: *start_coords
+    - molecule: runningHost
+      concentration: "\"cloud\""
+    - molecule: deviceDischargeRate
+      concentration: 0.05
+    - molecule: cloudDischargeRate
+      concentration: 0.001
 
 deployments:
   - *device
