@@ -28,6 +28,7 @@ dependencies {
     // Check the catalog at gradle/libs.versions.gradle
     implementation(libs.bundles.alchemist)
     implementation(libs.bundles.pulverization)
+    implementation(libs.kotlinx.coroutine)
 }
 
 multiJvm {

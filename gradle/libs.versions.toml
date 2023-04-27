@@ -7,6 +7,7 @@ pulverization = "0.5.1"
 alchemist = { module = "it.unibo.alchemist:alchemist", version.ref = "alchemist" }
 alchemist-incarnation-protelis = { module = "it.unibo.alchemist:alchemist-incarnation-protelis", version.ref = "alchemist" }
 alchemist-swingui = { module = "it.unibo.alchemist:alchemist-swingui", version.ref = "alchemist" }
+kotlinx-coroutine = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.7.0-RC" }
 pulverization-core = { module = "it.nicolasfarabegoli.pulverization-framework:core", version.ref = "pulverization" }
 pulverization-platform = { module = "it.nicolasfarabegoli.pulverization-framework:platform", version.ref = "pulverization" }
 
