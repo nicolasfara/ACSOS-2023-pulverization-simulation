@@ -1,14 +1,20 @@
 [versions]
 alchemist = "25.15.5"
+kotlin = "1.8.21"
+pulverization = "0.5.1"
 
 [libraries]
 alchemist = { module = "it.unibo.alchemist:alchemist", version.ref = "alchemist" }
 alchemist-incarnation-protelis = { module = "it.unibo.alchemist:alchemist-incarnation-protelis", version.ref = "alchemist" }
 alchemist-swingui = { module = "it.unibo.alchemist:alchemist-swingui", version.ref = "alchemist" }
+pulverization-core = { module = "it.nicolasfarabegoli.pulverization-framework:core", version.ref = "pulverization" }
+pulverization-platform = { module = "it.nicolasfarabegoli.pulverization-framework:platform", version.ref = "pulverization" }
 
 [bundles]
 alchemist = ["alchemist", "alchemist-incarnation-protelis", "alchemist-swingui"]
+pulverization = ["pulverization-core", "pulverization-platform"]
 
 [plugins]
 multiJvmTesting = "org.danilopianini.multi-jvm-test-plugin:0.4.23"
+kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 taskTree = "com.dorongold.task-tree:2.1.1"
