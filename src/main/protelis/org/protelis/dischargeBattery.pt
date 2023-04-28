@@ -1,25 +1,53 @@
 module org:protelis:dischargeBattery
 
+/**
+ * Given the [currentCharge] the function discharge the battery accordingly.
+ * @returns the new charge.
+ */
 def discharge(currentCharge) {
-    let runningHost = env.get("runningHost")
-    let deviceDischargeRate = env.get("deviceDischargeRate")
-    let cloudDischargeRate = env.get("cloudDischargeRate")
+    let behaviourDischargeRate = env.get("behaviourDischargeRate")
+    let communicationDischargeRate = env.get("communicationDischargeRate")
+    let sensorsDischargeRate = env.get("sensorsDischargeRate")
+    let intraComponentCommCost = env.get("intraComponentCommCost")
 
-    env.put("DEBUG running host: ", runningHost)
-    env.put("DEBUG Charge: ", currentCharge)
+    let behaviourInDevice = env.get("behaviourInDevice")
+    let communicationInDevice = env.get("communicationInDevice")
+    let sensorsInDevice = env.get("sensorsInDevice")
 
-    let dischargeRate = if (runningHost == "cloud") { cloudDischargeRate } else { deviceDischargeRate }
-    let newCharge = currentCharge - dischargeRate;
+    let intraCommCosts = intraComponentCost(behaviourInDevice, communicationInDevice, sensorsInDevice)
+    let behaviourCost = if (behaviourInDevice) { behaviourDischargeRate } else { 0.0 }
+    let commCost = if (communicationInDevice) { communicationDischargeRate } else { 0.0 }
+    let sensorsCost = if (sensorsInDevice) { sensorsDischargeRate } else { 0.0 }
+
+    let newCharge = currentCharge - intraCommCosts - behaviourCost - commCost - sensorsCost;
     if (newCharge < 0) { 0.0 } else { newCharge }
+}
+
+/**
+ * Determines the communication cost based on the local active components.
+ * @returns the cost for the communication between (remote) components.
+ */
+def intraComponentCost(bhvLocal, commLocal, sensLocal) {
+    let intraComponentCommCost = env.get("intraComponentCommCost")
+    if (bhvLocal) {
+        if (!commLocal) { intraComponentCommCost } else { 0.0 } + if (!sensLocal) { intraComponentCommCost } else { 0.0 }
+    } else {
+        if (commLocal) { intraComponentCommCost } else { 0.0 } + if (sensLocal) { intraComponentCommCost } else { 0.0 }
+    }
 }
 
 let now = self.getCurrentTime()
 let frame = 40;
-let currentCharge = 100.0;
 
-rep(still <- [now, currentCharge]) {
-    let stillNow = still.get(0)
-    let stillCharge = still.get(1)
+rep(stillNow <- now) {
+    let isCharging = env.get("isCharging")
+    let currentCharge = env.get("battery")
 
-    if (now - stillNow > frame) { [now, discharge(stillCharge)] } else { [stillNow, stillCharge] }
+    let out = if (now - stillNow > frame && !isCharging) { [now, discharge(currentCharge)] } else { [stillNow, currentCharge] }
+
+    let newTime = out.get(0)
+    let newBattery = out.get(1)
+
+    env.put("battery", newBattery)
+    newTime
 }

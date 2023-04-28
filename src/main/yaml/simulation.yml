@@ -18,7 +18,7 @@ variables:
   rng:
     formula: kotlin.random.Random(3457541856)
     language: kotlin
-  realDeviceCount: &real_device_count
+  device_count: &device_count
     type: GeometricVariable
     parameters: [250, 5, 500, 5]
   start_coords: &start_coords
@@ -26,7 +26,7 @@ variables:
       fun randomIn(range: ClosedRange<Double>) = (rng as kotlin.random.Random).nextDouble(range.start, range.endInclusive)
       generateSequence {
         listOf(randomIn(min_lat..max_lat), randomIn(min_lon..max_lon))
-      }.take(Math.ceil(realDeviceCount).toInt()).toList()
+      }.take(Math.ceil(device_count).toInt()).toList()
     language: kotlin
   longitude_space: &longitude_space
     formula: max_lon - min_lon
@@ -71,7 +71,7 @@ _move: &move
 
 _device: &device
   type: Rectangle
-  parameters: [*real_device_count, *min_lat, *min_lon, *latitude_space, *longitude_space]
+  parameters: [*device_count, *min_lat, *min_lon, *latitude_space, *longitude_space]
   programs: [*random-target, *move, *discharge]
   contents:
     - molecule: minLon
@@ -84,12 +84,24 @@ _device: &device
       concentration: *max_lat
     - molecule: initialTargets
       concentration: *start_coords
-    - molecule: runningHost
-      concentration: "\"cloud\""
-    - molecule: deviceDischargeRate
-      concentration: 0.05
-    - molecule: cloudDischargeRate
+    - molecule: battery
+      concentration: 100.0 # TODO(initialize it randomly)
+    - molecule: behaviourDischargeRate
+      concentration: 0.003
+    - molecule: communicationDischargeRate
+      concentration: 0.0015
+    - molecule: sensorsDischargeRate
       concentration: 0.001
+    - molecule: intraComponentCommCost
+      concentration: 0.002
+    - molecule: behaviourInDevice
+      concentration: true
+    - molecule: communicationInDevice
+      concentration: true
+    - molecule: sensorsInDevice
+      concentration: true
+    - molecule: isCharging
+      concentration: false
 
 deployments:
   - *device
