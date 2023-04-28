@@ -60,6 +60,9 @@ _move: &move
     actions:
       - type: TargetMapWalker
         parameters: [target, 1.4]
+    conditions:
+      - type: MoleculeHasConcentration
+        parameters: [isCharging, false]
   - type: Event # Triggers the first target
     time-distribution:
       type: Trigger
