@@ -1,4 +1,5 @@
 module org:protelis:dischargeBattery
+import it.nicolasfarabegoli.pulverization.ProtelisInterop.somethingHappened
 
 /**
  * Given the [currentCharge] the function discharge the battery accordingly.
@@ -20,7 +21,7 @@ def discharge(currentCharge) {
     let sensorsCost = if (sensorsInDevice) { sensorsDischargeRate } else { 0.0 }
 
     let newCharge = currentCharge - intraCommCosts - behaviourCost - commCost - sensorsCost;
-    if (newCharge < 0) { 0.0 } else { newCharge }
+    if (newCharge < 0) { env.put("isCharging", true); 0.0 } else { newCharge }
 }
 
 /**
@@ -36,18 +37,13 @@ def intraComponentCost(bhvLocal, commLocal, sensLocal) {
     }
 }
 
-let now = self.getCurrentTime()
-let frame = 40;
-
-rep(stillNow <- now) {
-    let isCharging = env.get("isCharging")
-    let currentCharge = env.get("battery")
-
-    let out = if (now - stillNow > frame && !isCharging) { [now, discharge(currentCharge)] } else { [stillNow, currentCharge] }
-
-    let newTime = out.get(0)
-    let newBattery = out.get(1)
-
-    env.put("battery", newBattery)
-    newTime
+def recharge(currentCharge) {
+    if (currentCharge >= 100.0) { env.put("isCharging", false); 100.0 } else { currentCharge + 1.0 }
 }
+
+let now = self.getCurrentTime()
+let isCharging = env.get("isCharging")
+let newCharge = if (isCharging) { recharge(env.get("battery")) } else { discharge(env.get("battery")) }
+env.put("battery", newCharge)
+somethingHappened()
+
