@@ -15,7 +15,7 @@ class DeviceBehaviour : Behaviour<Unit, Int, Int, Unit, Unit> {
     override val context: Context by inject()
 
     override fun invoke(state: Unit, export: List<Int>, sensedValues: Int): BehaviourOutput<Unit, Int, Unit, Unit> {
-        TODO("Not yet implemented")
+        return BehaviourOutput(Unit, 0, Unit, Unit)
     }
 }
 

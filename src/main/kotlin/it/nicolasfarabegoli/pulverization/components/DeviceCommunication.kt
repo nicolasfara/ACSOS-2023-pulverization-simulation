@@ -5,19 +5,16 @@ import it.nicolasfarabegoli.pulverization.core.Communication
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.BehaviourRef
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 
 class DeviceCommunication : Communication<Int> {
     override val context: Context by inject()
 
-    override fun receive(): Flow<Int> {
-        TODO("Not yet implemented")
-    }
+    override fun receive(): Flow<Int> = emptyFlow()
 
-    override suspend fun send(payload: Int) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun send(payload: Int) { }
 }
 
 suspend fun deviceCommunicationLogic(
