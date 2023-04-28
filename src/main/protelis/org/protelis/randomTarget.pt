@@ -7,8 +7,8 @@ def randomTarget() {
 	let maxLon = env.get("maxLon")
 	let lat = (maxLat - minLat) * self.nextRandomDouble() + minLat
 	let lon = (maxLon - minLon) * self.nextRandomDouble() + minLon
-	env.put("DEBUG: lat", lat)
-	env.put("DEBUG: lon", lon)
+	// env.put("DEBUG: lat", lat)
+	// env.put("DEBUG: lon", lon)
 	let router = self.getEnvironmentAccess().getRoutingService()
 	let result = optionally(router.allowedPointClosestTo(self.getEnvironmentAccess().makePosition(lat, lon)))
 	env.put("target", result.orElse(self.getDevicePosition()))
