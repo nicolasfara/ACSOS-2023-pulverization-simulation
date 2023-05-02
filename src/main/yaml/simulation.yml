@@ -72,9 +72,9 @@ _move: &move
 _device: &device
   type: Rectangle
   parameters: [*device_count, *min_lat, *min_lon, *latitude_space, *longitude_space]
-  programs: [*setup-device, *random-target, *move] #, *discharge]
+  programs: [*setup-device, *random-target, *move, *discharge]
   properties:
-    type: it.nicolasfarabegoli.pulverization.ReconfigurableDevice
+    type: it.nicolasfarabegoli.pulverization.OnLowBattery
   contents:
     - molecule: minLon
       concentration: *min_lon

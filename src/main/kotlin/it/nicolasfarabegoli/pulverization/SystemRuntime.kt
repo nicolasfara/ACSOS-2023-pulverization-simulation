@@ -46,9 +46,9 @@ val communicationDischargeRate by Molecule
 val behaviourInDevice by Molecule
 
 suspend fun configureRuntime(
-    device: ReconfigurableDevice,
+    reconfigurationEvent: OnLowBattery,
 ): DeploymentUnitRuntimeConfiguration<Unit, Int, Int, Unit, Unit> {
-    Logger.setMinSeverity(Severity.Error)
+    Logger.setMinSeverity(Severity.Info)
     return pulverizationRuntime(systemConfiguration, "smartphone", hosts) {
         DeviceBehaviour() withLogic ::deviceSmartphoneBehaviour startsOn Smartphone
         DeviceCommunication() withLogic ::deviceCommunicationLogic startsOn Server
@@ -79,7 +79,7 @@ suspend fun configureRuntime(
 
         reconfigurationRules {
             onDevice {
-                device reconfigures { Behaviour movesTo Server }
+                reconfigurationEvent reconfigures { Behaviour movesTo Server }
             }
         }
     }
