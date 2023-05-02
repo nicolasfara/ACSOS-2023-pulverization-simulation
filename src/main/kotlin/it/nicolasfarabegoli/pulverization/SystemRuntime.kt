@@ -10,7 +10,9 @@ import it.nicolasfarabegoli.pulverization.components.deviceSensorsLogic
 import it.nicolasfarabegoli.pulverization.components.deviceSmartphoneBehaviour
 import it.nicolasfarabegoli.pulverization.dsl.model.Behaviour
 import it.nicolasfarabegoli.pulverization.dsl.model.Capability
+import it.nicolasfarabegoli.pulverization.dsl.model.Communication
 import it.nicolasfarabegoli.pulverization.dsl.model.ComponentType
+import it.nicolasfarabegoli.pulverization.dsl.model.Sensors
 import it.nicolasfarabegoli.pulverization.runtime.communication.Binding
 import it.nicolasfarabegoli.pulverization.runtime.communication.Communicator
 import it.nicolasfarabegoli.pulverization.runtime.communication.RemotePlace
@@ -36,14 +38,14 @@ object Smartphone : Host {
     override val capabilities: Set<Capability> = setOf(SmartphoneDevice)
 }
 
-object Molecule {
+object GetMolecule {
     operator fun getValue(thisRef: Any?, property: KProperty<*>) = SimpleMolecule(property.name)
 }
 
 val hosts = setOf(Server, Smartphone)
-val battery by Molecule
-val communicationDischargeRate by Molecule
-val behaviourInDevice by Molecule
+val behaviourInDevice by GetMolecule
+val communicationInDevice by GetMolecule
+val sensorsInDevice by GetMolecule
 
 suspend fun configureRuntime(
     reconfigurationEvent: OnLowBattery,
@@ -66,7 +68,15 @@ suspend fun configureRuntime(
         withReconfigurator {
             object : Reconfigurator {
                 override fun receiveReconfiguration(): Flow<NewConfiguration> = emptyFlow()
-                override suspend fun reconfigure(newConfiguration: NewConfiguration) { }
+                override suspend fun reconfigure(newConfiguration: NewConfiguration) {
+                    val componentMolecule = when (newConfiguration.first) {
+                        Behaviour -> behaviourInDevice
+                        Communication -> communicationInDevice
+                        Sensors -> sensorsInDevice
+                        else -> error("Invalid component type")
+                    }
+                    reconfigurationEvent.node.setConcentration(componentMolecule, false)
+                }
             }
         }
         withRemotePlaceProvider {
