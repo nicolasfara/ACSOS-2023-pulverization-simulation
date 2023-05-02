@@ -20,7 +20,7 @@ object ProtelisInterop {
     fun AlchemistExecutionContext<*>.onBatteryChangeEvent() {
         val connector = (deviceUID as ProtelisDevice<*>).node.asProperty<Any, OnLowBattery>()
         runBlocking {
-            connector.updateBattery(executionEnvironment.get("battery") as Double)
+            connector.updateBattery(executionEnvironment.get("currentCapacity") as Double)
         }
     }
 

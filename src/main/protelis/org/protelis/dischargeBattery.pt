@@ -21,7 +21,7 @@ def discharge(currentCharge) {
     let sensorsCost = if (sensorsInDevice) { sensorsDischargeRate } else { 0.0 }
 
     let newCharge = currentCharge - intraCommCosts - behaviourCost - commCost - sensorsCost;
-    if (newCharge < 0) { env.put("isCharging", true); 0.0 } else { newCharge }
+    if (newCharge < 0.0) { env.put("isCharging", true); 0.0 } else { newCharge }
 }
 
 /**
@@ -38,11 +38,13 @@ def intraComponentCost(bhvLocal, commLocal, sensLocal) {
 }
 
 def recharge(currentCharge) {
-    if (currentCharge >= 100.0) { env.put("isCharging", false); 100.0 } else { currentCharge + 1.0 }
+    let rechargeRate = env.get("rechargeRate")
+    let addingCharge = rechargeRate / 1000.0 // TODO fix the formula
+    if (currentCharge >= env.get("batteryCapacity")) { env.put("isCharging", false); env.get("batteryCapacity") } else { currentCharge + addingCharge }
 }
 
 let now = self.getCurrentTime()
 let isCharging = env.get("isCharging")
-let newCharge = if (isCharging) { recharge(env.get("battery")) } else { discharge(env.get("battery")) }
-env.put("battery", newCharge)
+let newCharge = if (isCharging) { recharge(env.get("currentCapacity")) } else { discharge(env.get("currentCapacity")) }
+env.put("currentCapacity", newCharge)
 onBatteryChangeEvent()
