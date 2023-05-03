@@ -1,5 +1,5 @@
 [versions]
-alchemist = "25.15.5"
+alchemist = "25.16.1"
 kotlin = "1.8.21"
 pulverization = "0.6.0"
 
