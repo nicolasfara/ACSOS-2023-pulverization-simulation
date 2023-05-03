@@ -1,5 +1,6 @@
 package it.nicolasfarabegoli.pulverization.interop
 
+import it.nicolasfarabegoli.pulverization.GetMolecule
 import it.nicolasfarabegoli.pulverization.OnLowBattery
 import it.nicolasfarabegoli.pulverization.configureRuntime
 import it.nicolasfarabegoli.pulverization.runtime.PulverizationRuntime
@@ -15,9 +16,11 @@ object ProtelisInterop {
 
     @JvmStatic
     fun AlchemistExecutionContext<*>.onBatteryChangeEvent() {
-        val connector = (deviceUID as ProtelisDevice<*>).node.asProperty<Any, OnLowBattery>()
+        val device = (deviceUID as ProtelisDevice<*>)
+        val connector = device.node.asProperty<Any, OnLowBattery>()
+        val currentCapacity by GetMolecule
         runBlocking {
-            connector.updateBattery(executionEnvironment.get("currentCapacity") as Double)
+            connector.updateBattery(device.node.getConcentration(currentCapacity) as Double)
             connector.results.first() // Needed for synchronize Alchemist with the pulverization framework
         }
     }
@@ -26,11 +29,11 @@ object ProtelisInterop {
     fun AlchemistExecutionContext<*>.startPulverization() {
         if (this !in initialized) {
             initialized[this] = true
-            val deviceID = (deviceUID as ProtelisDevice<*>)
-            val reconfigurationEvent = deviceID.node.asProperty<Any, OnLowBattery>()
+            val device = (deviceUID as ProtelisDevice<*>)
+            val reconfigurationEvent = device.node.asProperty<Any, OnLowBattery>()
             runBlocking {
                 val config = configureRuntime(reconfigurationEvent)
-                val runtime = PulverizationRuntime(deviceID.id.toString(), "smartphone", config)
+                val runtime = PulverizationRuntime(device.id.toString(), "smartphone", config)
                 runtime.start()
             }
         }
