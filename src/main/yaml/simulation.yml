@@ -87,31 +87,31 @@ _device: &device
     - molecule: target
       concentration: [0, 0]
     - molecule: currentCapacity
-      concentration: 5000.0 # This value is randomized in setupDevice.pt
+      concentration: 5000.0       # This value is randomized in setupDevice.pt
     - molecule: batteryCapacity
-      concentration: 5000.0 # mAh
+      concentration: 5000.0       # The maximum possible capacity for a battery of a device [mAh]
     - molecule: minCapacity
-      concentration: 1000.0
+      concentration: 1000.0       # The minimum possible capacity for a battery of a device [mAh]
     - molecule: rechargeRate
-      concentration: 5000.0 # 1C (recharge rate) [mA]
-    - molecule: isCharging
-      concentration: false
+      concentration: 5000.0       # The recharge rate of the battery 1C (recharge rate) [mA]
     - molecule: reconfigurationCharge
-      concentration: 2000.0
+      concentration: 2000.0       # The battery level below which a configuration is triggered [mAh]
     - molecule: behaviourDischargeRate
-      concentration: 1.003
+      concentration: 1.003        # The discharge rate caused by the execution of the _Behaviour_ component in the device [mAh]
     - molecule: communicationDischargeRate
-      concentration: 0.0015
+      concentration: 0.0015       # The discharge rate caused by the execution of the _Communication_ component in the device [mAh]
     - molecule: sensorsDischargeRate
-      concentration: 0.001
+      concentration: 0.001        # The discharge rate caused by the execution of the _Sensors_ component in the device [mAh]
     - molecule: intraComponentCommCost
-      concentration: 0.002
+      concentration: 0.002        # The discharge rate caused by the communication with a remote component (pulverization) [mAh]
     - molecule: behaviourInDevice
-      concentration: true
+      concentration: true         # Set to `true` if the _Behaviour_ component is executed in the device
     - molecule: communicationInDevice
-      concentration: true
+      concentration: true         # Set to `true` if the _Communication_ component is executed in the device
     - molecule: sensorsInDevice
-      concentration: true
+      concentration: true         # Set to `true` if the _Sensors_ component is executed in the device
+    - molecule: isCharging
+      concentration: false        # Set `true` if the device is charging
 
 deployments:
   - *device
